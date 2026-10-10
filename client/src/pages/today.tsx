@@ -203,7 +203,7 @@ function ErrorState({ error, onRetry, retrying }: { error: ApiError; onRetry: ()
       <CloudOff className="mx-auto h-8 w-8 text-amber-600" aria-hidden />
       <h1 className="mt-3 text-lg font-semibold">{offline ? "Vous êtes hors connexion" : "Météo indisponible pour le moment"}</h1>
       <p className="mt-2 text-sm text-muted-foreground">
-        {offline ? "Vérifiez votre connexion internet." : error?.message || "Le service météo ne répond pas."} Aucun conseil n'est affiché tant que la météo réelle n'est pas disponible : LifePilot n'invente jamais de prévision.
+        {offline ? "Vérifiez votre connexion internet." : `${(error?.message || "Le service météo ne répond pas").replace(/\.?$/, ".")}`} Aucun conseil n'est affiché tant que la météo réelle n'est pas disponible : LifePilot n'invente jamais de prévision.
       </p>
       <Button variant="outline" className="mt-5" onClick={() => { queryClient.removeQueries({ queryKey: ["/api/today"] }); onRetry(); }} disabled={retrying} data-testid="button-retry">
         <RefreshCw className={`mr-2 h-4 w-4 ${retrying ? "animate-spin" : ""}`} aria-hidden />Réessayer
