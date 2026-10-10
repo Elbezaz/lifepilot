@@ -72,7 +72,7 @@ export default function PreferencesPage() {
         </div>
       </Section>
 
-      <div className="sticky bottom-20 z-10 flex justify-end md:bottom-4">
+      <div className={`${dirty ? "sticky bottom-20 md:bottom-4" : ""} z-10 flex justify-end`}>
         <Button size="lg" onClick={() => save.mutate()} disabled={!dirty || save.isPending || !loc.city} data-testid="button-save">
           {save.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Check className="mr-2 h-4 w-4" />}
           {dirty ? "Enregistrer" : "Enregistré"}

@@ -77,7 +77,7 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
         city: s.city, region: s.region, timezone: s.timezone, date: r.forecast.date,
         source: r.source, warning: r.warning, fetchedAt: r.forecast.fetchedAt,
         sunrise: r.forecast.sunrise, sunset: r.forecast.sunset, uvMax: r.forecast.uvMax,
-        now: r.forecast.hours.find((h) => Number(h.time.slice(11, 13)) === nowHour) ?? r.forecast.hours[0],
+        now: ((h) => ({ ...h, label: weatherLabel(h.weatherCode) }))(r.forecast.hours.find((h) => Number(h.time.slice(11, 13)) === nowHour) ?? r.forecast.hours[0]),
         hours: r.forecast.hours.map((h) => ({ ...h, label: weatherLabel(h.weatherCode) })),
         recommendation: rec,
       });

@@ -100,8 +100,8 @@ export default function NotificationsPage() {
         </ol>
         <p className="mt-4 flex gap-2 rounded-lg bg-muted p-3 text-xs text-muted-foreground">
           <ShieldCheck className="h-4 w-4 shrink-0" aria-hidden />
-          Ce nom de canal fait office de mot de passe : quiconque le connaît peut lire vos notifications. Ne le partagez pas. En cas de doute,
-          <button className="underline" onClick={() => regen.mutate()} data-testid="button-regen">générez-en un nouveau</button>.
+          <span>Ce nom de canal fait office de mot de passe : quiconque le connaît peut lire vos notifications. Ne le partagez pas. En cas de doute,{" "}
+          <button className="underline" onClick={() => regen.mutate()} data-testid="button-regen">générez-en un nouveau</button>.</span>
         </p>
       </section>
 

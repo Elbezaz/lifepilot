@@ -8,10 +8,12 @@ import type { Today, PublicSettings } from "@/lib/types";
 import { LABELS } from "@shared/prefs";
 import {
   Shirt, Layers, Footprints, Umbrella, AlertTriangle, CloudOff, RefreshCw, MapPin, Wind, Droplets, Thermometer,
-  BadgeCheck, BellRing, Sparkles, type LucideIcon,
+  BadgeCheck, BellRing, Sparkles, Sun, Backpack, type LucideIcon,
 } from "lucide-react";
 
-const SLOT_ICON: Record<string, LucideIcon> = { couche: Layers, haut: Shirt, bas: Shirt, chaussures: Footprints, accessoire: Umbrella };
+const SLOT_ICON: Record<string, LucideIcon> = { couche: Layers, haut: Shirt, bas: Shirt, chaussures: Footprints, accessoire: Backpack };
+const iconFor = (slot: string, tags: string[]): LucideIcon =>
+  tags.includes("parapluie") || tags.includes("impermeable") ? (slot === "chaussures" ? Footprints : Umbrella) : tags.includes("soleil") ? Sun : SLOT_ICON[slot] ?? Shirt;
 const SLOT_LABEL: Record<string, string> = { couche: "Couche extérieure", haut: "Haut", bas: "Bas", chaussures: "Chaussures", accessoire: "Accessoire" };
 
 const fmtTime = (iso: string, tz: string) => new Date(iso).toLocaleTimeString("fr-FR", { timeZone: tz, hour: "2-digit", minute: "2-digit" });
@@ -61,7 +63,7 @@ export default function TodayPage() {
           </p>
           <ul className="mt-4 divide-y" data-testid="list-items">
             {r.items.map((i, k) => {
-              const Icon = SLOT_ICON[i.slot] ?? Shirt;
+              const Icon = iconFor(i.slot, i.tags);
               return (
                 <li key={k} className="flex gap-3 py-3">
                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-accent text-accent-foreground"><Icon className="h-5 w-5" aria-hidden /></span>
@@ -122,15 +124,15 @@ export default function TodayPage() {
               <CartesianGrid vertical={false} stroke="hsl(var(--border))" />
               <ReferenceArea x1={p.dayStart} x2={p.dayEnd} yAxisId="t" fill="hsl(var(--accent))" fillOpacity={0.5} />
               <XAxis dataKey="h" tickFormatter={(v) => `${v}h`} tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} interval={2} axisLine={false} tickLine={false} />
-              <YAxis yAxisId="t" tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} domain={["dataMin - 2", "dataMax + 2"]} allowDecimals={false} />
+              <YAxis yAxisId="t" tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} domain={[(v: number) => Math.floor(v - 2), (v: number) => Math.ceil(v + 2)]} allowDecimals={false} tickFormatter={(v) => `${Math.round(v)}°`} />
               <YAxis yAxisId="p" orientation="right" domain={[0, 100]} hide />
               <Tooltip
                 contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 13 }}
                 labelFormatter={(v) => `${v}h`}
                 formatter={(v: any, n: string) => (n === "apparent" ? [`${v} °C`, "Ressenti"] : [`${v} %`, "Pluie"])}
               />
-              <Bar yAxisId="p" dataKey="rain" fill="hsl(var(--chart-3))" radius={[3, 3, 0, 0]} maxBarSize={14} />
-              <Line yAxisId="t" dataKey="apparent" stroke="hsl(var(--chart-1))" strokeWidth={2.5} dot={false} type="monotone" />
+              <Bar yAxisId="p" dataKey="rain" fill="hsl(var(--chart-3))" radius={[3, 3, 0, 0]} maxBarSize={14} isAnimationActive={false} />
+              <Line yAxisId="t" dataKey="apparent" stroke="hsl(var(--chart-1))" strokeWidth={2.5} dot={false} type="monotone" isAnimationActive={false} />
             </ComposedChart>
           </ResponsiveContainer>
         </div>
