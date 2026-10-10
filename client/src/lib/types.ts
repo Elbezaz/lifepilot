@@ -12,7 +12,7 @@ export interface Today {
 }
 export interface Status {
   localTime: string; localDay: string; timezone: string; todayDelivery: Delivery | null; deliveries: Delivery[];
-  lastTick: { at: string; source: string; result: any } | null; cronConfigured: boolean;
+  lastTick: { at: string; source: string; result: any } | null; lastExternalTick: string | null; cronConfigured: boolean;
   logs: { at: string; level: string; scope: string; message: string }[];
 }
 export interface Place { name: string; admin1?: string; country?: string; latitude: number; longitude: number; timezone: string }

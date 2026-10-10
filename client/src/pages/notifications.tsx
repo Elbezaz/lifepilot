@@ -121,6 +121,9 @@ export default function NotificationsPage() {
             ))}
           </ul>
         ) : <p className="mt-3 text-sm text-muted-foreground">Aucun envoi programmé pour l'instant.</p>}
+        {s.notifyEnabled && status.data && !status.data.lastExternalTick && (
+          <p className="mt-3 rounded-lg bg-amber-500/10 p-3 text-xs">Le réveil automatique (GitHub Actions) ne s'est pas encore manifesté depuis le dernier redémarrage du serveur. Si cela dure plus de 30 minutes, l'envoi à l'heure n'est pas garanti.</p>
+        )}
         {status.data?.lastTick && <p className="mt-3 text-xs text-muted-foreground">Dernière vérification automatique : {new Date(status.data.lastTick.at).toLocaleTimeString("fr-FR", { timeZone: s.timezone, hour: "2-digit", minute: "2-digit" })} ({status.data.lastTick.source}).</p>}
       </section>
 

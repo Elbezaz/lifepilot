@@ -33,8 +33,13 @@ export async function todayForecast(fetchImpl?: FetchLike, now = new Date()): Pr
   }
 }
 
+// Adresse de l'app pour le lien de la notification : APP_URL, sinon l'origine HTTPS vue lors de la dernière visite.
+let seenOrigin: string | undefined;
+export function rememberOrigin(origin?: string) {
+  if (origin && /^https:\/\/[a-z0-9.-]+$/i.test(origin)) seenOrigin = origin;
+}
 export function appUrl() {
-  return process.env.APP_URL || undefined;
+  return process.env.APP_URL || seenOrigin || undefined;
 }
 
 export type TickResult =
@@ -80,11 +85,14 @@ export async function tick(now = new Date(), fetchImpl?: FetchLike, sendImpl = s
 }
 
 let lastTick: { at: string; result: TickResult; source: string } | null = null;
+let lastExternal: string | null = null; // dernier réveil par GitHub Actions
 export const getLastTick = () => lastTick;
+export const getLastExternalTick = () => lastExternal;
 export async function runTick(source: string) {
   try {
     const result = await tick();
     lastTick = { at: new Date().toISOString(), result, source };
+    if (source === "github-actions") lastExternal = lastTick.at;
     return result;
   } catch (e: any) {
     logger.error("scheduler", e.message);

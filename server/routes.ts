@@ -5,7 +5,7 @@ import { updateSettingsSchema, type PublicSettings } from "@shared/schema";
 import { searchCity, getForecast, weatherLabel, WeatherError, type FetchLike } from "./modules/weather";
 import { recommend } from "./modules/outfit";
 import { sendNtfy, NTFY_SERVER } from "./modules/notify";
-import { todayForecast, runTick, getLastTick, startScheduler, appUrl } from "./modules/daily";
+import { todayForecast, runTick, getLastTick, getLastExternalTick, startScheduler, appUrl, rememberOrigin } from "./modules/daily";
 import { dueNow, isValidTimeZone, localParts } from "./modules/time";
 import { login, logout, requireAuth, requireCron, authRequired, isAuthenticated } from "./auth";
 import { logger } from "./logger";
@@ -35,6 +35,7 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
 
   // --- Protégé par le code d'accès ---
   app.use("/api", requireAuth);
+  app.use("/api", (req, _res, next) => { rememberOrigin(req.headers.origin as string | undefined); next(); });
 
   app.get("/api/settings", (_req, res) => res.json(publicSettings()));
 
@@ -105,6 +106,7 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
       todayDelivery: storage.getDelivery(d.day) ?? null,
       deliveries: storage.listDeliveries(10),
       lastTick: getLastTick(),
+      lastExternalTick: getLastExternalTick(),
       cronConfigured: !!process.env.CRON_SECRET,
       logs: logger.recent(30),
     });
