@@ -1,5 +1,5 @@
 {
-  "name": "rest-express",
+  "name": "lifepilot",
   "version": "1.0.0",
   "license": "MIT",
   "type": "module",
@@ -8,7 +8,8 @@
     "build": "tsx script/build.ts",
     "start": "NODE_ENV=production node dist/index.cjs",
     "check": "tsc",
-    "db:push": "drizzle-kit push"
+    "db:push": "drizzle-kit push",
+    "test": "LOG_QUIET=1 tsx --test --test-reporter=spec tests/*.test.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
